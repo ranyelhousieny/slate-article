@@ -1,70 +1,262 @@
-# Getting Started with Create React App
+Main Article at https://www.linkedin.com/pulse/basic-rich-text-editor-using-slate-rany-elhousieny-phd%25E1%25B4%25AC%25E1%25B4%25AE%25E1%25B4%25B0
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Let's create a react app to use slate in it.
 
-## Available Scripts
+npx create-react-app slate-article
 
-In the project directory, you can run:
+Add alt text
+No alt text provided for this image
 
-### `npm start`
+After It finishes, change the directory and npm start
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+cd slate-article
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+npm start
+Installing Slate:
 
-### `npm test`
+npm i slate slate-react slate-history immutable
+Now let’s instantiate the core component, which is the Editor object.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Create a folder for the components under src and inside it, create a file named BasicEditor.jsx
 
-### `npm run build`
+Add alt text
+No alt text provided for this image
+Inside BasicEditor.jsx, create a react functional component using (rafce)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Add alt text
+No alt text provided for this image
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Add alt text
+No alt text provided for this image
+Let's render the BasicEditor component inside App;jsx as follows:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+import BasicEditor from './components/BasicEditor'
 
-### `npm run eject`
+function App() {
+return (
+<div>
+<BasicEditor />
+</div>
+);
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+export default App;
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Add alt text
+No alt text provided for this image
+Of course, you will only see the word BasicEditor on the browser.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Add alt text
+No alt text provided for this image
+createEditor
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+createEditor() is the Slate Editor factory. It will create the basic SlateJS editor instance. We will use this instance to add to the basic editor, as we will see later.
 
-## Learn More
+First, we need to import createEditor from Slate inside the BasicEditor.jsx file.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+import { createEditor } from 'slate'
+To create an Editor object, we use createEditor().
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+const editor =
+createEditor();
+Next up is to render a <Slate> context provider as follows:
 
-### Code Splitting
+import { Slate } from 'slate-react';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+      <Slate
+        editor={
+          editor
+        }></Slate>
 
-### Analyzing the Bundle Size
+Add alt text
+No alt text provided for this image
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+However, nothing will show on the screen because we did not pass an initial value to the Editor. To do that, we need to create an initial document using the Slate schema as follows:
 
-### Making a Progressive Web App
+const initialDocument = [
+{
+type: 'paragraph',
+children: [
+{
+text: 'This is the text from the initial document',
+},
+],
+},
+];
+The schema has a type (ex: paragraph) and children (ex: the text in this paragraph)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+We will pass this document to the value attribute as follows:
 
-### Advanced Configuration
+<Slate
+editor={editor}
+value={
+initialDocument
+}></Slate>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Add alt text
+No alt text provided for this image
 
-### Deployment
+Finally, we need to add the <Editable /> component. Editable is the component that renders the document hierarchy for editing.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+import { createEditor } from 'slate';
+import {
+Editable,
+Slate,
+} from 'slate-react';
 
-### `npm run build` fails to minify
+const Editor = () => {
+const editor =
+createEditor();
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+const initialDocument = [
+{
+type: 'paragraph',
+children: [
+{
+text: 'This is the text from the initial document',
+},
+],
+},
+];
+
+return (
+<>
+<div>Editor</div>
+<Slate
+editor={editor}
+value={
+initialDocument
+}>
+<Editable />
+</Slate>
+</>
+);
+};
+
+export default Editor;
+
+Add alt text
+No alt text provided for this image
+
+You will find the browser as follows (note you will be able to add text but can not delete)
+
+Add alt text
+No alt text provided for this image
+To make it fully editable, you need to use withReact() plugin as follows:
+
+// dependencies imported as below.
+import { withReact } from "slate-react";
+
+const editor = withReact(createEditor());
+
+Add alt text
+No alt text provided for this image
+withReact is a SlateJS plugin that adds React and DOM behaviors to the editor object. Now, you will be able to add and delete as follows:
+
+Add alt text
+No alt text provided for this image
+Convert to Typescript
+
+To convert Editor.jsx to Typescript Editor.tsx, we need to extend the Editor with ReactEditor and add annotations as per the documentation on TypeScript. The example below also includes the custom types required for the rest of this example. To define a custom Element or Text type, extend the CustomTypes interface in the slate module like this.
+
+// TypeScript users only add this code
+import { BaseEditor, Descendant } from 'slate'
+import { ReactEditor } from 'slate-react'
+
+type CustomElement = { type: 'paragraph'; children: CustomText[] }
+type CustomText = { text: string }
+
+declare module 'slate' {
+interface CustomTypes {
+Editor: BaseEditor & ReactEditor
+Element: CustomElement
+Text: CustomText
+}
+}
+Annotate the editor’s initial document w/ Descendant[].
+
+(alias) type Descendant = CustomText | CustomElement
+
+import Descendant from ‘slate’
+
+The Descendant union type represents nodes that are descendants in the tree. It is returned as a convenience in certain cases to narrow a value further than the more generic Node union.
+
+import { Descendant } from 'slate'
+const initialDocument: Descendant[] =
+[
+{
+type: 'paragraph',
+children: [
+{
+text: 'This is the text from the initial document',
+},
+],
+},
+];
+Here is the Editor.tsx
+
+import {
+createEditor,
+BaseEditor, //For Typescript
+Descendant, //For Typescript
+} from 'slate';
+import {
+Editable,
+Slate,
+withReact,
+ReactEditor, //For Typescript
+} from 'slate-react';
+
+//For Typescript: Defining paragraph and Text
+
+type CustomElement = {
+type: 'paragraph';
+children: CustomText[];
+};
+
+type CustomText = {
+text: string;
+};
+
+//For Typescript: Slate interface
+declare module 'slate' {
+interface CustomTypes {
+Editor: BaseEditor &
+ReactEditor;
+Element: CustomElement;
+Text: CustomText;
+}
+}
+
+const initialDocument: Descendant[] =
+[
+{
+type: 'paragraph',
+children: [
+{
+text: 'This is the text from the initial document',
+},
+],
+},
+];
+
+const Editor = () => {
+const editor = withReact(
+createEditor()
+);
+
+return (
+<>
+<div>Editor</div>
+<Slate
+editor={editor}
+value={
+initialDocument
+}>
+<Editable />
+</Slate>
+</>
+);
+};
+
+export default Editor;
